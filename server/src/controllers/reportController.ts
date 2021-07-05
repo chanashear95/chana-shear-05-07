@@ -23,8 +23,8 @@ export const getReport = async (req: Request, res: Response) => {
         JOIN visit ON visit.caregiver = caregiver.id
         JOIN patient ON patient.id = visit.patient
     `;
-    
-    let result : QueryResult;
+
+    let result: QueryResult;
     try {
         result = await dbUtil.sqlToDB(sql, []);
         const report: Report = {
@@ -32,11 +32,13 @@ export const getReport = async (req: Request, res: Response) => {
             caregivers: []
         };
 
-        for ( let row of result.rows) {
-            report.caregivers.push({
-                name: row.caregiver_name,
-                patients: [row.patient_name]
-            })
+        for (let row of result.rows) {
+            if (new Date(row.visit_date).getFullYear().toString() == req.params.year.toString()) {
+                report.caregivers.push({
+                    name: row.caregiver_name,
+                    patients: [row.patient_name]
+                })
+            }
         }
         res.status(200).json(report);
     } catch (error) {

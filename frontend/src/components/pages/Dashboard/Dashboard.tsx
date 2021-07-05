@@ -65,7 +65,6 @@ function useDashboard(params: { year: number }) {
 
     const fetchReport = React.useCallback(async () => {
         startLoading();
-        console.log(state.type)
 
         return await axios
             .get<unknown>(endpoint(`reports/${params.year}`))
