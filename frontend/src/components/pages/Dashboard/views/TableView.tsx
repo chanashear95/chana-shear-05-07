@@ -10,10 +10,12 @@ import { PrimaryText } from "../components/PrimaryText";
 import RefreshIndicator from "../components/RefreshIndicator";
 import TableBlocks from "../components/TableBlocks";
 import { Report } from "../Dashboard";
+import LoadingView from "./LoadingView";
 
 interface Props {
     report: Report;
     isRefreshing: boolean;
+    onClickRefresh: any;
 }
 
 const Header = styled(Center)`
@@ -37,50 +39,57 @@ const StyledTableView = styled.div`
 const { Table, Tr, Th, Td } = TableBlocks;
 
 const TableView = (props: Props) => {
-    return (
-        <StyledTableView>
-            <RefreshIndicator isRefreshing={props.isRefreshing} />
-            <Header>
-                <MedFlytLogo />
-                <PrimaryText>Year {props.report.year} - caregivers report</PrimaryText>
-            </Header>
-            <Row justifyContent="flex-end">
-                <Button>
-                    <RefreshIcon />
-                    <span>Refresh</span>
-                </Button>
-            </Row>
-            <Table>
-                <thead>
-                    <Tr>
-                        <Th>Caregiver name</Th>
-                        <Th>Patients</Th>
-                    </Tr>
-                </thead>
-                <tbody>
-                    {props.report.caregivers.map((caregiver, idx) => (
-                        <Tr key={idx}>
-                            <Td>{caregiver.name}</Td>
-                            <Td>
-                                {caregiver.patients.length > 0 ? (
-                                    caregiver.patients.join(', ')
-                                ) : (
-                                    <None />
-                                )}
-                            </Td>
-                        </Tr>
-                    ))}
-                </tbody>
-                {props.report.caregivers.length === 0 ? (
-                    <tbody>
-                        <tr>
-                            <td colSpan={2}>No results!</td>
-                        </tr>
-                    </tbody>
-                ) : null}
-            </Table>
-        </StyledTableView>
-    );
+    switch (props.isRefreshing) {
+        case true:
+            return <LoadingView />
+        case false:
+            return (
+                <StyledTableView>
+                    <RefreshIndicator isRefreshing={props.isRefreshing} />
+                    <Header>
+                        <MedFlytLogo />
+                        <PrimaryText>Year {props.report.year} - caregivers report</PrimaryText>
+                    </Header>
+                    <Row justifyContent="flex-end">
+                        <Button onClick={props.onClickRefresh}>
+                            <RefreshIcon />
+                            <span>Refresh</span>
+                        </Button>
+                    </Row>
+                    <Table>
+                        <thead>
+                            <Tr>
+                                <Th>Caregiver name</Th>
+                                <Th>Patients</Th>
+                            </Tr>
+                        </thead>
+                        <tbody>
+                            {props.report.caregivers.map((caregiver, idx) => (
+                                <Tr key={idx}>
+                                    <Td>{caregiver.name}</Td>
+                                    <Td>
+                                        {caregiver.patients.length > 0 ? (
+                                            caregiver.patients.join(', ')
+                                        ) : (
+                                                <None />
+                                            )}
+                                    </Td>
+                                </Tr>
+                            ))}
+                        </tbody>
+                        {props.report.caregivers.length === 0 ? (
+                            <tbody>
+                                <tr>
+                                    <td colSpan={2}>No results!</td>
+                                </tr>
+                            </tbody>
+                        ) : null}
+                    </Table>
+                </StyledTableView>
+            );
+        default:
+            return <></>;
+    }
 };
 
 export default TableView;

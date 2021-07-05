@@ -65,6 +65,7 @@ function useDashboard(params: { year: number }) {
 
     const fetchReport = React.useCallback(async () => {
         startLoading();
+        console.log(state.type)
 
         return await axios
             .get<unknown>(endpoint(`reports/${params.year}`))
@@ -89,8 +90,13 @@ function useDashboard(params: { year: number }) {
     return { state, actions: { fetchReport } };
 }
 
+
 const Dashboard = () => {
     const { state, actions } = useDashboard({ year: 2021 });
+
+    const refreshReport = () => {
+        actions.fetchReport();
+    }
 
     switch (state.type) {
         case "Initial":
@@ -98,7 +104,7 @@ const Dashboard = () => {
         case "Rejected":
             return <ErrorView message={state.error} onClickRetry={actions.fetchReport} />;
         case "Resolved":
-            return <TableView {...state} />;
+            return <TableView {...state} onClickRefresh={refreshReport}/>;
         default:
             assertNever(state);
             return <></>;
