@@ -9,5 +9,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: url("./assets/background-icon.svg") no-repeat hsla(221, 39%, 11%, 1);
+    background-position-y: bottom;
+    background-attachment: fixed;
     color: #fff;
 }
