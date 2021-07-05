@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path:'.env'});
 const config = {
     serviceName: process.env.SERVICENAME || 'node typescript postgres app',
-    port: Number(process.env.PORT) || 3000,
+    port: Number(process.env.PORT) || 3201,
     loggerLevel: 'debug',
     db: {
         user: process.env.DB_USER || '',
