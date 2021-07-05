@@ -49,6 +49,20 @@ function useDashboard(params: { year: number }) {
         });
     };
 
+    const sortCaregivers = (careGivers: Array<any>) => {
+        let sortedCareGivers: Array<any> = [];
+        for(let i = 0; i < careGivers.length; i++){
+            if(!sortedCareGivers.find(cg => cg.name === careGivers[i].name)){
+                sortedCareGivers.push(careGivers[i]);
+            }
+            else{
+                let careGiverIdx = sortedCareGivers.findIndex(cg => cg.name === careGivers[i].name);
+                sortedCareGivers[careGiverIdx].patients = sortedCareGivers[careGiverIdx].patients.concat(careGivers[i].patients);
+            }
+        }
+        return sortedCareGivers;
+    }
+
     const fetchReport = React.useCallback(async () => {
         startLoading();
 
@@ -59,7 +73,9 @@ function useDashboard(params: { year: number }) {
                     console.error(PathReporter.report(resType.decode(response)).join(", "));
                     throw new Error("Error");
                 }
-                setState({ type: "Resolved", report: response.data, isRefreshing: false });
+                let sortedCareGivers = sortCaregivers(response.data.caregivers);
+                let report = {...response.data, caregivers: sortedCareGivers};
+                setState({ type: "Resolved", report: report, isRefreshing: false });
             })
             .catch(() => {
                 setState({ type: "Rejected", error: "Error" });
